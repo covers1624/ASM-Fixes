@@ -6,7 +6,8 @@ import codechicken.lib.asm.ModularASMTransformer;
 import codechicken.lib.asm.ModularASMTransformer.MethodInjector;
 import codechicken.lib.asm.ModularASMTransformer.MethodReplacer;
 import codechicken.lib.asm.ObfMapping;
-import cpw.mods.fml.common.FMLLog;
+import covers1624.asmfixes.config.Config;
+import covers1624.asmfixes.util.LogHelper;
 import cpw.mods.fml.relauncher.FMLLaunchHandler;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
@@ -55,14 +56,18 @@ public class ASMTransformer implements IClassTransformer {
     }
 
     private void initClientTransformers() {
-        clientTransformer.add(new MethodInjector(new ObfMapping("net/minecraft/potion/PotionEffect", "func_76455_a", "(Lnet/minecraft/entity/EntityLivingBase;)Z"), asmBlocks.get("potionFix"), true));
-        FMLLog.info("Loading Client Transformers.");
+        LogHelper.info("Loading Client Transformers.");
+        if (Config.enableInvalidPotionFix) {
+            clientTransformer.add(new MethodInjector(new ObfMapping("net/minecraft/potion/PotionEffect", "func_76455_a", "(Lnet/minecraft/entity/EntityLivingBase;)Z"), asmBlocks.get("potionFix"), true));
+        }
     }
 
     private void initCommonTransformers() {
-        commonTransformer.add(new MethodReplacer(new ObfMapping("net/machinemuse/numina/recipe/SimpleItemMaker", "getRecipeOutput", "()Lnet/minecraft/item/ItemStack;"), asmBlocks.get("n_museLogSpam"), new ASMBlock()));
-        commonTransformer.add(new MethodReplacer(new ObfMapping("net/machinemuse/numina/recipe/SimpleItemMatcher", "matchesItem", "(Lnet/minecraft/item/ItemStack;)Z"), asmBlocks.get("n_museLogSpam"), new ASMBlock()));
-        FMLLog.info("Loading Common Transformers.");
+        LogHelper.info("Loading Common Transformers.");
+        if (Config.enableNuminaConsoleSpamFix) {
+            commonTransformer.add(new MethodReplacer(new ObfMapping("net/machinemuse/numina/recipe/SimpleItemMaker", "getRecipeOutput", "()Lnet/minecraft/item/ItemStack;"), asmBlocks.get("n_museLogSpam"), new ASMBlock()));
+            commonTransformer.add(new MethodReplacer(new ObfMapping("net/machinemuse/numina/recipe/SimpleItemMatcher", "matchesItem", "(Lnet/minecraft/item/ItemStack;)Z"), asmBlocks.get("n_museLogSpam"), new ASMBlock()));
+        }
     }
 
 }
