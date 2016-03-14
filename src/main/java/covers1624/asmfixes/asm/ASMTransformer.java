@@ -47,11 +47,19 @@ public class ASMTransformer implements IClassTransformer {
         }
 
         if (FMLLaunchHandler.side().isClient()) {
-            bytes = clientTransformer.transform(name, bytes);
+            try {
+                bytes = clientTransformer.transform(name, bytes);
+            } catch (Throwable t) {
+                LogHelper.bigFatal("Unable to transform class [%s] using client transformer.", name);
+                t.printStackTrace();
+            }
         }
-
-        bytes = commonTransformer.transform(name, bytes);
-
+        try {
+            bytes = commonTransformer.transform(name, bytes);
+        } catch (Throwable t) {
+            LogHelper.bigFatal("Unable to transform class [%s] using common transformer", name);
+            t.printStackTrace();
+        }
         return bytes;
     }
 

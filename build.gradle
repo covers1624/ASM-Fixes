@@ -37,7 +37,7 @@ repositories {
 
 jar {
     manifest {
-        attributes 'FMLCorePlugin': 'covers1624.asmfixes.asm.CoreMod'
+        attributes 'FMLCorePlugin': 'covers1624.asmfixes.asm.ASMFixesCoreModHandler'
         attributes 'FMLAT': 'asmfixes_at.cfg'
     }
 }
