@@ -34,12 +34,31 @@ repositories {
 		url "http://chickenbones.net/maven/"
 	}
 }
+def commonManifest = {
+    attributes 'FMLCorePlugin': 'covers1624.asmfixes.asm.ASMFixesCoreModHandler'
+    attributes 'FMLCorePluginContainsFMLMod': 'true'
+    attributes 'FMLAT': 'asmfixes_at.cfg'
+}
 
 jar {
-    manifest {
-        attributes 'FMLCorePlugin': 'covers1624.asmfixes.asm.ASMFixesCoreModHandler'
-        attributes 'FMLAT': 'asmfixes_at.cfg'
-    }
+    classifier = 'universal'
+    manifest commonManifest
+}
+
+task srcJar(type: Jar) {
+    from sourceSets.main.java
+    classifier = 'sources'
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+    manifest commonManifest
+}
+
+// Tell the artifact system about our extra jars
+artifacts {
+    archives srcJar, deobfJar
 }
 
 dependencies {
